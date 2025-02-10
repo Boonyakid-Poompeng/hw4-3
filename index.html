@@ -18,11 +18,24 @@
             <input type="text" id="title" placeholder="หัวข้อ" class="w-full p-2 border rounded mb-2" required>
             <input type="date" id="date" class="w-full p-2 border rounded mb-2" required>
             <input type="time" id="startTime" class="w-full p-2 border rounded mb-2" required>
-            <button type="submit" class="bg-blue-500 text-white p-2 rounded w-full">เพิ่มนัดหมาย</button>
+            <button type="submit"
+                class="bg-blue-500 text-white p-2 rounded w-full hover:bg-blue-600">เพิ่มนัดหมาย</button>
         </form>
+
         <!-- รายการนัดหมาย -->
         <h2 class="text-xl font-bold mb-2">📋 รายการนัดหมาย</h2>
-        <ul id="appointment-list" class="space-y-2"></ul>
+        <table class="w-full border-collapse border border-gray-300">
+            <thead>
+                <tr class="bg-gray-200">
+                    <th class="border border-gray-300 p-2">หัวข้อ</th>
+                    <th class="border border-gray-300 p-2">วันที่</th>
+                    <th class="border border-gray-300 p-2">เวลา</th>
+                    <th class="border border-gray-300 p-2">สถานะ</th>
+                    <th class="border border-gray-300 p-2">การกระทำ</th>
+                </tr>
+            </thead>
+            <tbody id="appointment-list"></tbody>
+        </table>
     </div>
 </body>
 
