@@ -10,10 +10,13 @@ document.addEventListener("DOMContentLoaded", () => {
         appointments.forEach((appointment) => {
             const row = document.createElement("tr");
             row.innerHTML = `
-                <td class="border p-2">${appointment.title}</td>
-                <td class="border p-2">${appointment.date}</td>
-                <td class="border p-2">${appointment.startTime}</td>
+                <td class="border p-2 ${appointment.status === "cancelled" ? "line-through text-gray-500" : ""}">${appointment.title}</td>
+                <td class="border p-2 ${appointment.status === "cancelled" ? "line-through text-gray-500" : ""}">${appointment.date}</td>
+                <td class="border p-2 ${appointment.status === "cancelled" ? "line-through text-gray-500" : ""}">${appointment.startTime}</td>
                 <td class="border p-2">${appointment.status}</td>
+                <td class="border p-2">
+                    <button class="bg-red-500 text-white p-1 rounded" onclick="cancelAppointment('${appointment.id}')">ยกเลิก</button>
+                </td>
             `;
             appointmentList.appendChild(row);
         });
@@ -21,16 +24,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ฟังก์ชันเพิ่มนัดหมายใหม่
     form.addEventListener("submit", (e) => {
-        e.preventDefault(); // ป้องกันการ reload หน้าเว็บ
+        e.preventDefault();
 
         const title = document.getElementById("title").value;
         const date = document.getElementById("date").value;
         const startTime = document.getElementById("startTime").value;
 
-        if (!title || !date || !startTime) return; // ตรวจสอบค่าว่าง
+        if (!title || !date || !startTime) return;
 
         const newAppointment = {
-            id: Date.now().toString(), // สร้าง ID ไม่ซ้ำ
+            id: Date.now().toString(),
             title,
             date,
             startTime,
@@ -38,10 +41,19 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         appointments.push(newAppointment);
-        localStorage.setItem("appointments", JSON.stringify(appointments)); // บันทึกลง Local Storage
-        renderAppointments(); // อัปเดตตาราง
-        form.reset(); // ล้างค่าในฟอร์ม
+        localStorage.setItem("appointments", JSON.stringify(appointments));
+        renderAppointments();
+        form.reset();
     });
 
-    renderAppointments(); // โหลดข้อมูลเริ่มต้น
+    // ฟังก์ชันยกเลิกนัดหมาย
+    window.cancelAppointment = (id) => {
+        appointments = appointments.map(app =>
+            app.id === id ? { ...app, status: "cancelled" } : app
+        );
+        localStorage.setItem("appointments", JSON.stringify(appointments));
+        renderAppointments();
+    };
+
+    renderAppointments();
 });
