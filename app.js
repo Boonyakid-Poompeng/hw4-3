@@ -15,6 +15,18 @@ document.addEventListener("DOMContentLoaded", () => {
         return appointments.filter(app => app.date === tomorrowDate && app.status !== "cancelled");
     }
 
+    // ฟังก์ชันกรองนัดหมายที่เลยวันแล้ว
+    function filterPastAppointments() {
+        const today = new Date().toISOString().split('T')[0]; // รับวันที่ปัจจุบัน
+        appointments = appointments.filter(app => app.date >= today); // กรองเฉพาะนัดหมายที่ยังไม่เลยวัน
+    }
+
+    // ฟังก์ชันตรวจสอบเวลาซ้ำ
+    function checkTimeConflict(date, startTime) {
+        return appointments.some(app => app.date === date && app.startTime === startTime && app.status !== "cancelled");
+    }
+
+    // ฟังก์ชันแสดงนัดหมายทั้งหมด
     function renderAppointments() {
         appointmentList.innerHTML = ""; // เคลียร์ตารางก่อนโหลดใหม่
 
@@ -59,11 +71,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // ฟังก์ชันตรวจสอบเวลาซ้ำ
-    function checkTimeConflict(date, startTime) {
-        return appointments.some(app => app.date === date && app.startTime === startTime && app.status !== "cancelled");
-    }
-
     // ฟังก์ชันเพิ่มนัดหมายใหม่
     form.addEventListener("submit", (e) => {
         e.preventDefault();
@@ -97,5 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
         renderAppointments();
     };
 
+    // เรียกใช้ filter ก่อนแสดงผล
+    filterPastAppointments();
     renderAppointments();
 });
