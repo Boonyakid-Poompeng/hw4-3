@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("appointment-form");
     const appointmentList = document.getElementById("appointment-list");
 
     // โหลดข้อมูลจาก Local Storage
@@ -18,5 +19,29 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    renderAppointments(); // เรียกใช้งานตอนโหลดหน้าเว็บ
+    // ฟังก์ชันเพิ่มนัดหมายใหม่
+    form.addEventListener("submit", (e) => {
+        e.preventDefault(); // ป้องกันการ reload หน้าเว็บ
+
+        const title = document.getElementById("title").value;
+        const date = document.getElementById("date").value;
+        const startTime = document.getElementById("startTime").value;
+
+        if (!title || !date || !startTime) return; // ตรวจสอบค่าว่าง
+
+        const newAppointment = {
+            id: Date.now().toString(), // สร้าง ID ไม่ซ้ำ
+            title,
+            date,
+            startTime,
+            status: "confirmed"
+        };
+
+        appointments.push(newAppointment);
+        localStorage.setItem("appointments", JSON.stringify(appointments)); // บันทึกลง Local Storage
+        renderAppointments(); // อัปเดตตาราง
+        form.reset(); // ล้างค่าในฟอร์ม
+    });
+
+    renderAppointments(); // โหลดข้อมูลเริ่มต้น
 });
