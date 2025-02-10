@@ -8,9 +8,13 @@ document.addEventListener("DOMContentLoaded", () => {
     function renderAppointments() {
         appointmentList.innerHTML = ""; // เคลียร์ตารางก่อนโหลดใหม่
         appointments.forEach((appointment) => {
+            const isConflict = checkTimeConflict(appointment.date, appointment.startTime);
+
             const row = document.createElement("tr");
             row.innerHTML = `
-                <td class="border p-2 ${appointment.status === "cancelled" ? "line-through text-gray-500" : ""}">${appointment.title}</td>
+                <td class="border p-2 ${appointment.status === "cancelled" ? "line-through text-gray-500" : ""}">
+                    ${appointment.title} ${isConflict ? "⚠️" : ""}
+                </td>
                 <td class="border p-2 ${appointment.status === "cancelled" ? "line-through text-gray-500" : ""}">${appointment.date}</td>
                 <td class="border p-2 ${appointment.status === "cancelled" ? "line-through text-gray-500" : ""}">${appointment.startTime}</td>
                 <td class="border p-2">${appointment.status}</td>
@@ -18,8 +22,16 @@ document.addEventListener("DOMContentLoaded", () => {
                     <button class="bg-red-500 text-white p-1 rounded" onclick="cancelAppointment('${appointment.id}')">ยกเลิก</button>
                 </td>
             `;
+            if (isConflict) {
+                row.classList.add("bg-yellow-200"); // เปลี่ยนสีแถวถ้ามีการชนกัน
+            }
             appointmentList.appendChild(row);
         });
+    }
+
+    // ฟังก์ชันตรวจสอบเวลาซ้ำ
+    function checkTimeConflict(date, startTime) {
+        return appointments.some(app => app.date === date && app.startTime === startTime && app.status !== "cancelled");
     }
 
     // ฟังก์ชันเพิ่มนัดหมายใหม่
