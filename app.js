@@ -5,8 +5,38 @@ document.addEventListener("DOMContentLoaded", () => {
     // โหลดข้อมูลจาก Local Storage
     let appointments = JSON.parse(localStorage.getItem("appointments")) || [];
 
+    // ฟังก์ชันแสดงนัดหมายล่วงหน้า 1 วัน
+    function getUpcomingAppointments() {
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(today.getDate() + 1);
+        const tomorrowDate = tomorrow.toISOString().split('T')[0];
+
+        return appointments.filter(app => app.date === tomorrowDate && app.status !== "cancelled");
+    }
+
     function renderAppointments() {
         appointmentList.innerHTML = ""; // เคลียร์ตารางก่อนโหลดใหม่
+
+        // แสดงนัดหมายล่วงหน้า 1 วัน
+        const upcomingAppointments = getUpcomingAppointments();
+        upcomingAppointments.forEach((appointment) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td class="border p-2 ${appointment.status === "cancelled" ? "line-through text-gray-500" : ""}">
+                    ${appointment.title}
+                </td>
+                <td class="border p-2 ${appointment.status === "cancelled" ? "line-through text-gray-500" : ""}">${appointment.date}</td>
+                <td class="border p-2 ${appointment.status === "cancelled" ? "line-through text-gray-500" : ""}">${appointment.startTime}</td>
+                <td class="border p-2">${appointment.status}</td>
+                <td class="border p-2">
+                    <button class="bg-red-500 text-white p-1 rounded" onclick="cancelAppointment('${appointment.id}')">ยกเลิก</button>
+                </td>
+            `;
+            appointmentList.appendChild(row);
+        });
+
+        // แสดงนัดหมายอื่นๆ
         appointments.forEach((appointment) => {
             const isConflict = checkTimeConflict(appointment.date, appointment.startTime);
 
