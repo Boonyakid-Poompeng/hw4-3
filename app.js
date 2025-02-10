@@ -5,6 +5,12 @@ document.addEventListener("DOMContentLoaded", () => {
     // โหลดข้อมูลจาก Local Storage
     let appointments = JSON.parse(localStorage.getItem("appointments")) || [];
 
+    // ฟังก์ชันกรองนัดหมายที่เลยวันแล้ว
+    function filterPastAppointments() {
+        const today = new Date().toISOString().split('T')[0]; // รับวันที่ปัจจุบัน
+        appointments = appointments.filter(app => app.date >= today); // กรองเฉพาะนัดหมายที่ยังไม่เลยวัน
+    }
+
     // ฟังก์ชันแสดงนัดหมายล่วงหน้า 1 วัน
     function getUpcomingAppointments() {
         const today = new Date();
@@ -13,12 +19,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const tomorrowDate = tomorrow.toISOString().split('T')[0];
 
         return appointments.filter(app => app.date === tomorrowDate && app.status !== "cancelled");
-    }
-
-    // ฟังก์ชันกรองนัดหมายที่เลยวันแล้ว
-    function filterPastAppointments() {
-        const today = new Date().toISOString().split('T')[0]; // รับวันที่ปัจจุบัน
-        appointments = appointments.filter(app => app.date >= today); // กรองเฉพาะนัดหมายที่ยังไม่เลยวัน
     }
 
     // ฟังก์ชันตรวจสอบเวลาซ้ำ
